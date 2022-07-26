@@ -1,19 +1,13 @@
-use std::str::FromStr;
 use owo_colors::OwoColorize;
-use poc_framework::solana_program::pubkey::Pubkey;
-use poc_framework::{keypair, RemoteEnvironment, setup_logging, solana_program};
-use poc_framework::solana_sdk::system_program;
-use poc_framework::solana_client::rpc_client::RpcClient;
+use poc_framework::{keypair, RemoteEnvironment,};
 use poc_framework::solana_program::instruction::{AccountMeta, Instruction};
 
 use poc_framework::solana_sdk::{
-    commitment_config::CommitmentConfig,
-    signature::{Keypair, Signer},
+    signature::{read_keypair_file, Signer},
 };
 
 use poc_framework::Environment;
 use poc_framework::localhost_client;
-//use poc_framework::LogLevel::DEBUG;
 use borsh::{BorshSerialize, BorshDeserialize};
 
 //Same struct
@@ -27,11 +21,12 @@ pub struct CarnivalInstructionData {
 }
 
 pub fn main() {
-    let program = Pubkey::from_str("EFywtcMaAqJGL6kVZ9oUpUy2SWiJCez55DdUf8deo8Xq").unwrap();
+    let programa_keypair = read_keypair_file("./program/target/so/program-keypair.json").unwrap();
+    let programa = programa_keypair.pubkey();
     let new_account = keypair(1);
-    let mut cliente1 = localhost_client();
+    let cliente1 = localhost_client();
 
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Julio"),
         height: 48,
         ticket_count: 5,
@@ -44,10 +39,10 @@ pub fn main() {
 
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+    let mut env = RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000);
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -57,7 +52,7 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
                 );
 
 
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Javier"),
         height: 36,
         ticket_count: 5,
@@ -67,14 +62,12 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let mut cliente1 = localhost_client();
 
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -84,7 +77,7 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
                 );
 
 
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Niky"),
         height: 55,
         ticket_count: 5,
@@ -94,13 +87,11 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let mut cliente1 = localhost_client();
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -109,7 +100,7 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
                     &[&keypair(3)],
                 );
 
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Chelo"),
         height: 58,
         ticket_count: 3,
@@ -119,14 +110,11 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let mut cliente1 = localhost_client();
-
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -136,7 +124,7 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
                 );
                 
 //GAME
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Pinky"),
         height: 36,
         ticket_count: 15,
@@ -146,14 +134,11 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let mut cliente1 = localhost_client();
-
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -163,7 +148,7 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
                 );
 
         
-    let mut my_ser_data = CarnivalInstructionData {
+    let my_ser_data = CarnivalInstructionData {
         name: String::from("Cachimba"),
         height: 52,
         ticket_count: 3,
@@ -173,14 +158,11 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let mut cliente1 = localhost_client();
-
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],
@@ -200,14 +182,11 @@ RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
     
     let mut my_data: Vec<u8> = vec![];
     my_ser_data.serialize(&mut my_data).unwrap();
-    let cliente1 = localhost_client();
-
     println!("Payer: {:?}", keypair(3).pubkey().red());
 
-RemoteEnvironment::new_with_airdrop(cliente1, keypair(3), 10000000)
-        .execute_as_transaction_debug(
+        env.execute_as_transaction_debug(
             &[Instruction {
-                program_id: program,
+                program_id: programa,
                 accounts: vec![
                     AccountMeta::new(keypair(3).pubkey(), true),
                     ],

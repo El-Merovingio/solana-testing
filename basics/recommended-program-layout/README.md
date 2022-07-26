@@ -4,6 +4,16 @@ Read this article:
 https://medium.com/@asmiller1989/solana-transactions-in-depth-1f7f7fe06ac2
 
 - Don't forget to run the PoC with:
+```
+chmod +x cicd.sh
+./cicd.sh
+```
+
+**CHECK THE LOGS:**
+	
+`solana logs`
+
+The old fashion way is the following:
 
 `cargo run --manifest-path=./pocs/Cargo.toml --target-dir=./program/target/
 `

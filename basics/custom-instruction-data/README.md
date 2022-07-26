@@ -1,6 +1,11 @@
 # Instructions
-You can run the cicd.sh script, but probably it will fail because of your Solana Keypair.
+To run, just execute:
+```
+chmod +x cicd.sh
+./cicd.sh
+```
 
+The old fashion way is the following:
 It's recommended to deploy the program running the following.
 - First you must build the BPF:
 > cargo build-bpf --manifest-path=./program/Cargo.toml --bpf-out-dir=./program/target/so
