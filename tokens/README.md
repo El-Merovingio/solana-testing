@@ -1,8 +1,3 @@
-# Instructions
-
-- **mint-to** PoC is not complete, it just test some functions. 
-- 	Check **mint** and **mint-2**, and finish the PoC.
-
 # Forked from
 - https://github.com/solana-developers/program-examples/
 

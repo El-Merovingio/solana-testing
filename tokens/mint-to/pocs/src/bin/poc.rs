@@ -1,15 +1,16 @@
-use std::str::FromStr;
+use std::{env, str::FromStr};
 use owo_colors::OwoColorize;
 use poc_framework::solana_program::pubkey::Pubkey;
 use poc_framework::solana_program::sysvar::rent;
 use poc_framework::{keypair, RemoteEnvironment, setup_logging, solana_program};
 use poc_framework::solana_sdk::system_program;
 use poc_framework::solana_client::rpc_client::RpcClient;
+use poc_framework::random_keypair;
 use poc_framework::solana_program::instruction::{AccountMeta, Instruction};
 
 use poc_framework::solana_sdk::{
     commitment_config::CommitmentConfig,
-    signature::{Keypair, Signer},
+    signature::{read_keypair_file, Keypair, Signer},
 };
 
 use poc_framework::Environment;
@@ -19,6 +20,7 @@ use poc_framework::localhost_client;
 use { 
     poc_framework::spl_token::{
         instruction as token_instruction,
+        state::Account as TokenAccount
     },
 // not necessary to use here, we are going to use the mpl token program address
 //    mpl_token_metadata::{
@@ -27,7 +29,7 @@ use {
 };
 use borsh::{BorshSerialize, BorshDeserialize};
 
-// We use the same Structure created in the Smart Contract
+// We use the same Structure created in the Smart Contract state/mintrs
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct TokenMetadata {
     title: String,
@@ -35,13 +37,20 @@ pub struct TokenMetadata {
     uri: String,
 }
 
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct MintTokenTo {
+    pub amount: u64,
+}
+
 pub fn main() {
 
-    let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
+    let programa_keypair = read_keypair_file("./program/target/so/program-keypair.json").unwrap();
+    let programa = programa_keypair.pubkey();
+    //let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
     //mpl token program address
     let mpl_token_metadata = Pubkey::from_str("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").unwrap();
     let cliente1 = localhost_client();
-    let mint_account = keypair(1);
+    let mint_account = random_keypair();
     let mint_authority =  keypair(2);
     // exammple:
     // https://github.com/solana-developers/program-examples/blob/c5b1d527ecd5f4afb4fe4c9d9b02fc2f055ff2f1/tokens/token_metadata.json
@@ -79,8 +88,8 @@ pub fn main() {
     */
 
         //mint_authority = keypair(2)
-    RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000)
-            .execute_as_transaction_debug(
+    let mut env = RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000);
+            env.execute_as_transaction_debug(
                 &[Instruction {
                     program_id: programa,
                     accounts: vec![
@@ -96,5 +105,50 @@ pub fn main() {
                         }],
                         &[&mint_account, &mint_authority],
                     );
+
+    let metadata2 = MintTokenTo {
+        amount: 1,
+    };
+    //We create a u8 vector and serialize the metadata
+    let mut my_data2: Vec<u8> = vec![];
+    metadata2.serialize(&mut my_data2).unwrap();
+
+    let token_acc = poc_framework::spl_associated_token_account::get_associated_token_address(
+        &mint_authority.pubkey(), 
+        &mint_account.pubkey(),
+        );
+
+            env.execute_as_transaction_debug(
+                &[Instruction {
+                    program_id: programa,
+                    accounts: vec![
+                        AccountMeta::new(mint_account.pubkey(), true),
+                        AccountMeta::new(token_acc, false),
+                        AccountMeta::new_readonly(mint_authority.pubkey(), true),
+                        AccountMeta::new_readonly(poc_framework::solana_program::sysvar::rent::id(), false),
+                        AccountMeta::new_readonly(system_program::ID, false),
+                        AccountMeta::new_readonly(poc_framework::spl_token::ID, false),
+                        AccountMeta::new_readonly(poc_framework::spl_associated_token_account::ID, false),
+                        ],
+                        data: metadata2.try_to_vec().unwrap(),  
+                        }],
+                        &[&mint_account, &mint_authority],
+                    );
+
+    let mint_account_info = env.get_account(mint_account.pubkey());
+    let mint_authority_info = env.get_account(mint_authority.pubkey());
+
+    println!("Mint account info: {:?}", mint_account_info.unwrap().blue());
+    println!("");
+
+    println!("Mint authority info: {:?}", mint_authority_info.unwrap().red());
+    println!("");
+
+    let token_acc_token = env.get_unpacked_account::<TokenAccount>(token_acc);
+
+    println!("Token account address: {:?}", token_acc.blue());
+    println!("");
+    println!("Token account unpacked info: {:?}", token_acc_token.unwrap().blue());   
+    println!("");
 
 }
