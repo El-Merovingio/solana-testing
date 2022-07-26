@@ -37,7 +37,7 @@ pub struct TokenMetadata {
 
 pub fn main() {
 
-    let programa = Pubkey::from_str("GkxNvwBMsJVH48jZhmcB8SKGEVFwsGaZETPbQyZUKBpq").unwrap();
+    let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
     //mpl token program address
     let mpl_token_metadata = Pubkey::from_str("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").unwrap();
     let cliente1 = localhost_client();

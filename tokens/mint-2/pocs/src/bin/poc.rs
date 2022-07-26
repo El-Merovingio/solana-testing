@@ -55,7 +55,7 @@ pub struct TransferTokensTo {
 
 pub fn main() {
 
-    let programa = Pubkey::from_str("FRyrVe8J9W8vt8LzV5RaVMawfVqUEihkDAj3oooeuqNu").unwrap();
+    let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
     //mpl token program address
     let mpl_token_metadata = Pubkey::from_str("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").unwrap();
     /*export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
