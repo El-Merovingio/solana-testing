@@ -15,6 +15,13 @@ Because we are patching the source **crates-io** with a local checked out versio
 
 # Commands summary
 - Install rust and solana
+- To run, just execute:
+```
+chmod +x cicd.sh
+./cicd.sh
+```
+
+- The following point, was to avoid errors using **poc_framework 0.1.6**, but we have updated the dependencies, to use **poc_framework 0.2.0**.
 - Use rustup 1.60 version, check this: https://github.com/neodyme-labs/solana-poc-framework/issues/9
 - Compile the Smart Contract:
 	`cargo build-bpf --manifest-path=./program/Cargo.toml --bpf-out-dir=./program/target/so

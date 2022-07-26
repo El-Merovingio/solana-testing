@@ -2,7 +2,7 @@
 To run, just execute:
 ```
 chmod +x cicd.sh
-/cicd.sh
+./cicd.sh
 ```
 
 The old fashion way is the following:

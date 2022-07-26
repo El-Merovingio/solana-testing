@@ -1,16 +1,13 @@
-use std::{env, str::FromStr};
+use std::{str::FromStr};
 use owo_colors::OwoColorize;
 use poc_framework::solana_program::pubkey::Pubkey;
-use poc_framework::solana_program::sysvar::rent;
-use poc_framework::{keypair, RemoteEnvironment, setup_logging, solana_program};
+use poc_framework::{keypair, RemoteEnvironment,};
 use poc_framework::solana_sdk::system_program;
-use poc_framework::solana_client::rpc_client::RpcClient;
 use poc_framework::random_keypair;
 use poc_framework::solana_program::instruction::{AccountMeta, Instruction};
 
 use poc_framework::solana_sdk::{
-    commitment_config::CommitmentConfig,
-    signature::{read_keypair_file, Keypair, Signer},
+    signature::{read_keypair_file, Signer},
 };
 
 use poc_framework::Environment;
@@ -19,8 +16,7 @@ use poc_framework::localhost_client;
 
 use { 
     poc_framework::spl_token::{
-        instruction as token_instruction,
-        state::Account as TokenAccount
+      state::Account as TokenAccount
     },
 // not necessary to use here, we are going to use the mpl token program address
 //    mpl_token_metadata::{

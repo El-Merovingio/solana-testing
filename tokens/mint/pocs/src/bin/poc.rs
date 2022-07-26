@@ -1,30 +1,17 @@
 use std::str::FromStr;
 use owo_colors::OwoColorize;
 use poc_framework::solana_program::pubkey::Pubkey;
-use poc_framework::solana_program::sysvar::rent;
-use poc_framework::{keypair, RemoteEnvironment, setup_logging, solana_program};
+use poc_framework::{keypair, RemoteEnvironment,};
 use poc_framework::solana_sdk::system_program;
-use poc_framework::solana_client::rpc_client::RpcClient;
 use poc_framework::solana_program::instruction::{AccountMeta, Instruction};
 
 use poc_framework::solana_sdk::{
-    commitment_config::CommitmentConfig,
-    signature::{Keypair, Signer},
+    signature::{read_keypair_file, Signer},
 };
 
 use poc_framework::Environment;
 use poc_framework::localhost_client;
-//use poc_framework::LogLevel::DEBUG;
 
-use { 
-    poc_framework::spl_token::{
-        instruction as token_instruction,
-    },
-// not necessary to use here, we are going to use the mpl token program address
-//    mpl_token_metadata::{
-//        instruction as mpl_instruction,
-//    },
-};
 use borsh::{BorshSerialize, BorshDeserialize};
 
 // We use the same Structure created in the Smart Contract
@@ -37,7 +24,8 @@ pub struct TokenMetadata {
 
 pub fn main() {
 
-    let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
+    let programa_keypair = read_keypair_file("./program/target/so/program-keypair.json").unwrap();
+    let programa = programa_keypair.pubkey();
     //mpl token program address
     let mpl_token_metadata = Pubkey::from_str("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").unwrap();
     let cliente1 = localhost_client();
@@ -73,14 +61,9 @@ pub fn main() {
 
     println!("{:} {:?}", "METADATA PDA Address: ".bold().blue(), metadata_pda.blue());
 
-    
-    /*let url = "http://localhost:8899".to_string();
-    let mut client = RpcClient::new_with_commitment(url, CommitmentConfig::confirmed());  
-    */
-
         //mint_authority = keypair(2)
-    RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000)
-            .execute_as_transaction_debug(
+    let mut env = RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000);
+            env.execute_as_transaction_debug(
                 &[Instruction {
                     program_id: programa,
                     accounts: vec![
@@ -96,5 +79,10 @@ pub fn main() {
                         }],
                         &[&mint_account, &mint_authority],
                     );
-
+            
+            let check_meta = env.get_account(metadata_pda).unwrap();
+            println!("Metadata PDA account: {:?}", check_meta);
+            println!("");
+            println!("Metadata PDA account data: {:?}", check_meta.data);
+            
 }

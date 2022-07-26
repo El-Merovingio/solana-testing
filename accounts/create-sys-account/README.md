@@ -3,7 +3,7 @@ You can run the cicd.sh script, but probably it will fail because of your Solana
 To run, just execute:
 ```
 chmod +x cicd.sh
-/cicd.sh
+./cicd.sh
 ```
 
 The old fashion way is the following:

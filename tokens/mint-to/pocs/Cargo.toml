@@ -9,17 +9,13 @@ poc-framework = { version = "0.2.0" }
 owo-colors = "3.1.0"
 borsh = "0.9.1"
 borsh-derive = "0.9.1"
-#spl-token = { version="3.2.0", features = [ "no-entrypoint" ] }
-#mpl-token-metadata = { version="1.2.5", features = [ "no-entrypoint" ] }
-#spl-token-metadata = { version="0.0.1", features = [ "no-entrypoint" ] }
-
 
 [lib]
 
 [patch.crates-io]
-poc-framework = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/poc-framework-0.2.0/" }
-solana-runtime = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-runtime-1.11.2/"}
-solana-program = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-program-1.11.2/" }
-solana-bpf-loader-program = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-bpf-loader-program-1.11.2/" }
-spl-token = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/spl-token-3.2.0/" }
-spl-associated-token-account = { path = "/Users/jiglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/spl-associated-token-account-1.0.5" } 
+poc-framework = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/poc-framework-0.2.0/" }
+solana-runtime = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-runtime-1.11.2/"}
+solana-program = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-program-1.11.2/" }
+solana-bpf-loader-program = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/solana-bpf-loader-program-1.11.2/" }
+spl-token = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/spl-token-3.3.0/" }
+spl-associated-token-account = { path = "/Users/miglesias/.cargo/registry/src/github.com-1ecc6299db9ec823/spl-associated-token-account-1.0.5" } 

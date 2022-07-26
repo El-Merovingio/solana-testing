@@ -1,34 +1,22 @@
 use std::str::FromStr;
 use owo_colors::OwoColorize;
 use poc_framework::solana_program::pubkey::Pubkey;
-use poc_framework::solana_program::sysvar::rent;
-use poc_framework::{keypair, RemoteEnvironment, setup_logging, solana_program};
+use poc_framework::{keypair, RemoteEnvironment,};
 use poc_framework::solana_sdk::system_program;
-use poc_framework::solana_client::rpc_client::RpcClient;
 use poc_framework::solana_program::instruction::{AccountMeta, Instruction};
 
 use poc_framework::solana_sdk::{
-    commitment_config::CommitmentConfig,
-    signature::{Keypair, Signer},
+    signature::{read_keypair_file, Signer},
 };
 
 use poc_framework::Environment;
 use poc_framework::localhost_client;
-//use poc_framework::LogLevel::DEBUG;
 
 use { 
     poc_framework::spl_token::{
-        instruction as token_instruction,
         state::Account as TokenAccount
     },
-
-// not necessary to use here, we are going to use the mpl token program address
-//    mpl_token_metadata::{
-//        instruction as mpl_instruction,
-//    },
 };
-
-use poc_framework::spl_associated_token_account::get_associated_token_address;
 
 use borsh::{BorshSerialize, BorshDeserialize};
 
@@ -55,7 +43,8 @@ pub struct TransferTokensTo {
 
 pub fn main() {
 
-    let programa = Pubkey::from_str("PUT_HERE_THE_PROGRAM_ID").unwrap();
+    let programa_keypair = read_keypair_file("./program/target/so/program-keypair.json").unwrap();
+    let programa = programa_keypair.pubkey();
     //mpl token program address
     let mpl_token_metadata = Pubkey::from_str("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").unwrap();
     /*export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
@@ -107,13 +96,11 @@ pub fn main() {
     let mut my_data: Vec<u8> = vec![];
     metadata.serialize(&mut my_data).unwrap();
     
-    /*let url = "http://localhost:8899".to_string();
-    let mut client = RpcClient::new_with_commitment(url, CommitmentConfig::confirmed());  
-    */
-
         //mint_authority = keypair(2)
-    RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000)
-            .execute_as_transaction_debug(
+    let mut env = RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000);
+            env.airdrop(mint_authority.pubkey(), 10000000000);
+            env.airdrop(keypair(5).pubkey(), 10000000000); //keypair(5) will be the receiver
+            env.execute_as_transaction_debug(
                 &[Instruction {
                     program_id: programa,
                     accounts: vec![
@@ -151,11 +138,7 @@ pub fn main() {
                     &mint_account.pubkey(),
                     );
     
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    //RemoteEnvironment::new_with_airdrop(cliente1, keypair(2), 10000000000)
-    RemoteEnvironment::new(cliente1, keypair(2))
-            .execute_as_transaction_debug(
+            env.execute_as_transaction_debug(
                 &[Instruction {
                     program_id: programa,
                     accounts: vec![
@@ -176,10 +159,7 @@ pub fn main() {
     println!("Token address: {:?}", token_dir.blue());
     println!("");
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let token_addr = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_account(token_dir);
+           let token_addr = env.get_account(token_dir);
 
     println!("Token without unwrap: {:?}", token_addr.blue());
     println!("");
@@ -191,10 +171,7 @@ pub fn main() {
     println!("Token data: {:?}", token_unwrap_data.blue().bold());
     println!("");
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let token_info = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_unpacked_account::<TokenAccount>(token_dir);
+           let token_info = env.get_unpacked_account::<TokenAccount>(token_dir);
 
     println!("Token unpacked account: {:?}", token_info.blue());       
     println!("Token unpacked account using unwrap: {:?}", token_info.unwrap().red());
@@ -220,10 +197,7 @@ pub fn main() {
                     &mint_account.pubkey(),
                     );
     
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    RemoteEnvironment::new_with_airdrop(cliente1, keypair(5), 10000000000)
-            .execute_as_transaction_debug(
+            env.execute_as_transaction_debug(
                 &[Instruction {
                     program_id: programa,
                     accounts: vec![
@@ -248,15 +222,9 @@ pub fn main() {
     println!("Receiver Token address: {:?}", receiver_token.blue());
     println!("");
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let owner_token_addr = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_account(owner_token);
+           let owner_token_addr = env.get_account(owner_token);
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let receiver_token_addr = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_account(receiver_token);
+            let receiver_token_addr = env.get_account(receiver_token);
 
     println!("Owner token info: {:?}", owner_token_addr.unwrap().blue());
     println!("");
@@ -264,15 +232,9 @@ pub fn main() {
     println!("Receiver token info: {:?}", receiver_token_addr.unwrap().red());
     println!("");
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let owner_token_unpack = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_unpacked_account::<TokenAccount>(owner_token);
+        let owner_token_unpack = env.get_unpacked_account::<TokenAccount>(owner_token);
 
-    let cliente1 = localhost_client();
-    //mint_authority = keypair(2)
-    let receiver_token_unpack = RemoteEnvironment::new(cliente1, keypair(2))
-            .get_unpacked_account::<TokenAccount>(receiver_token);
+        let receiver_token_unpack = env.get_unpacked_account::<TokenAccount>(receiver_token);
 
     println!("Owner Token unpacked account: {:?}", owner_token_unpack.unwrap().blue());   
     println!("");    

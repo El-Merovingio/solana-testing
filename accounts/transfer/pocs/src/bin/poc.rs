@@ -12,7 +12,7 @@ use poc_framework::localhost_client;
 pub fn main() {
     //SETUP
     let programa_keypair = read_keypair_file("./program/target/so/program-keypair.json").unwrap();
-    let programa = programa_keypair.pubkey();      
+    let programa = programa_keypair.pubkey();
     let new_account = keypair(1);
     let cliente1 = localhost_client();
     
