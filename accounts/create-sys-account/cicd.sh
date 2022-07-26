@@ -9,5 +9,4 @@ solana program deploy ./program/target/so/program.so
 cargo run --manifest-path=./pocs/Cargo.toml --target-dir=./program/target/
 #IF error, replace the program ID in the poc.rs with the correct
 
-echo CHECK the correct Program ID and replace 'program' variable, in poc.rs with the correct one
 solana program show --programs
